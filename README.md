@@ -69,10 +69,10 @@ Marketing-ML/
 │   └── 05_ML_Observability.ipynb
 ├── 💾 data/                   # Data pipeline
 │   ├── schema/                # Snowflake DDL
-│   ├── synthetic/             # Data generation
-│   └── streaming/             # Real-time ingestion
-├── 🔧 features/               # Feature engineering
-├── 🤖 models/                 # ML model implementations
+│   └── streaming/             # Real-time event generation
+├── 🎬 demo_streaming.py       # Live event demo (run during presentations!)
+├── 🎬 DEMO_STREAMING_GUIDE.md # How to use live event streaming
+├── 🔍 observability/          # ML monitoring and drift detection  
 └── 🚀 deployment/             # Production deployment
 ```
 
@@ -173,8 +173,8 @@ You now have a **complete, production-ready** ML pipeline! Here's your path forw
 4. **📊 Review predictions**: Check your daily batch scoring results
 
 ### **Production Considerations:**
-- **💰 Cost-Effective**: Batch inference (~$10-30/month) covers 95% of financial ML needs
-- **⚡ Real-time Available**: Add container services (~$300-800/month) only if <100ms required
+- **⚡ Batch Processing**: Covers 95% of financial ML needs with daily scoring
+- **⚡ Real-time Available**: Add container services only if <100ms response required
 - **📈 Monitor Performance**: Use observability dashboard for model health
 - **🔄 Auto-Scaling**: Daily batch scoring handles growth seamlessly
 

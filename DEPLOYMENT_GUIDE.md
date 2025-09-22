@@ -6,13 +6,13 @@ This guide provides a **practical, simplified approach** to ML deployment that c
 ## 🎯 Deployment Strategy
 
 ### **Primary Approach: Batch Inference** (Recommended for 95% of use cases)
-- **Cost**: Very low (native Snowflake)
+- **Efficiency**: Very high (native Snowflake)
 - **Maintenance**: Zero
 - **Performance**: Processes all clients in minutes
 - **Use for**: Daily/weekly client scoring, portfolio analysis, campaign targeting
 
 ### **Secondary Approach: Real-time Inference** (Only when needed)
-- **Cost**: High (container services)
+- **Efficiency**: Moderate (container services)
 - **Maintenance**: Moderate
 - **Performance**: <100ms response time
 - **Use for**: Live advisor calls, instant website recommendations
@@ -141,17 +141,17 @@ ORDER BY alert_timestamp DESC;
 
 ---
 
-## 💰 Cost Optimization
+## ⚡ Performance Optimization
 
-### Batch Inference Cost Factors:
-- **Compute**: ~$5-20/month (depending on warehouse size)
-- **Storage**: ~$2-5/month (prediction tables)
-- **Total**: **$10-30/month** for typical financial services ML
+### Batch Inference Benefits:
+- **Compute**: Efficient use of Snowflake warehouse resources
+- **Storage**: Minimal prediction table storage needed
+- **Scalability**: Handles thousands of clients seamlessly
 
-### Real-time Inference Cost Factors:
-- **Container Services**: ~$200-500/month (depending on usage)
-- **Compute Pool**: ~$100-300/month
-- **Total**: **$300-800/month** for real-time capabilities
+### Real-time Inference Considerations:
+- **Container Services**: Higher resource requirements
+- **Compute Pool**: Dedicated compute resources needed
+- **Complexity**: Additional infrastructure management
 
 ### Recommendation:
 **Start with batch inference only**. Add real-time only when business requires <100ms responses.

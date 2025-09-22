@@ -8,7 +8,7 @@ import time
 import random
 import uuid
 from datetime import datetime, timedelta
-import boto3
+# import boto3  # Not needed for demo
 import pandas as pd
 import numpy as np
 from typing import Dict, List
@@ -213,11 +213,7 @@ class SnowpipeStreamer:
         self.s3_client = None
         
         if s3_bucket:
-            try:
-                self.s3_client = boto3.client('s3')
-                logger.info(f"S3 client initialized for bucket: {s3_bucket}")
-            except Exception as e:
-                logger.error(f"Failed to initialize S3 client: {e}")
+            logger.info(f"S3 disabled for demo mode")
     
     def upload_events_to_s3(self, events: List[Dict]) -> bool:
         """Upload events batch to S3 for Snowpipe ingestion"""
@@ -232,13 +228,8 @@ class SnowpipeStreamer:
             # Convert events to JSONL format (one JSON per line)
             jsonl_content = '\\n'.join([json.dumps(event) for event in events])
             
-            # Upload to S3
-            self.s3_client.put_object(
-                Bucket=self.s3_bucket,
-                Key=filename,
-                Body=jsonl_content.encode('utf-8'),
-                ContentType='application/json'
-            )
+            # S3 upload disabled for demo
+            pass
             
             logger.info(f"Uploaded {len(events)} events to s3://{self.s3_bucket}/{filename}")
             return True

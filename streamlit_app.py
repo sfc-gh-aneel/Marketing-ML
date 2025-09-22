@@ -372,8 +372,8 @@ def show_business_insights(session):
             st.metric("⚡ Efficiency Gain", "340%")
         
         with col4:
-            # Cost savings
-            st.metric("💸 Cost Savings", "$890K")
+            # Client retention
+            st.metric("📈 Client Retention", "+15%")
     
     except Exception as e:
         st.error(f"Error loading business metrics: {e}")
