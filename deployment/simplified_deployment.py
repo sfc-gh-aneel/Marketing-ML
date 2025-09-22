@@ -7,7 +7,7 @@ Simplified ML Deployment for Financial Services
 import snowflake.snowpark as snowpark
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import *
-import yaml
+# import yaml  # Not needed for simplified demo
 import logging
 from datetime import datetime
 
@@ -16,9 +16,19 @@ logger = logging.getLogger(__name__)
 class SimplifiedMLDeployment:
     """Simplified deployment focusing on practical financial services needs"""
     
-    def __init__(self, config_path: str = "config.yaml"):
-        with open(config_path, 'r') as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self):
+        # Simplified - no config file needed for demo
+        self.config = {
+            'snowflake': {
+                'account': 'your_account',
+                'user': 'your_user', 
+                'password': 'your_password',
+                'role': 'ML_ROLE',
+                'warehouse': 'ML_WAREHOUSE',
+                'database': 'FINANCIAL_ML',
+                'schema': 'PUBLIC'
+            }
+        }
         
         self.session = None
         

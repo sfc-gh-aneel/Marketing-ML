@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List
 import logging
-import yaml
+# import yaml  # Not needed for demo
 import threading
 from queue import Queue
 
@@ -22,11 +22,12 @@ logger = logging.getLogger(__name__)
 class MarketingEventStreamer:
     """Stream synthetic marketing events to S3 for Snowpipe ingestion"""
     
-    def __init__(self, config_path: str = "config.yaml"):
-        with open(config_path, 'r') as f:
-            self.config = yaml.safe_load(f)
-        
-        self.streaming_config = self.config['streaming']
+    def __init__(self):
+        # Simplified - no config file needed for demo
+        self.streaming_config = {
+            'batch_size': 50,
+            'frequency_seconds': 3
+        }
         self.event_queue = Queue()
         self.is_streaming = False
         

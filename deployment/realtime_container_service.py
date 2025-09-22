@@ -6,16 +6,26 @@ USE ONLY when millisecond response times are required
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark import Session
-import yaml
+# import yaml  # Not needed for demo
 import json
 from datetime import datetime
 
 class RealtimeMLService:
     """Real-time ML service for high-frequency, low-latency inference"""
     
-    def __init__(self, config_path: str = "config.yaml"):
-        with open(config_path, 'r') as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self):
+        # Simplified - no config file needed
+        self.config = {
+            'snowflake': {
+                'account': 'your_account',
+                'user': 'your_user',
+                'password': 'your_password', 
+                'role': 'ML_ROLE',
+                'warehouse': 'ML_WAREHOUSE',
+                'database': 'FINANCIAL_ML',
+                'schema': 'PUBLIC'
+            }
+        }
         
         self.session = None
     
