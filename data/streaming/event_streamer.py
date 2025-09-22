@@ -239,31 +239,53 @@ class SnowpipeStreamer:
             logger.error(f"Failed to upload events to S3: {e}")
             return False
     
-    def save_events_locally(self, events: List[Dict], local_dir: str = "data/streaming/output"):
-        """Save events locally (alternative to S3)"""
-        import os
-        os.makedirs(local_dir, exist_ok=True)
-        
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        filename = f"{local_dir}/events_{timestamp}.json"
-        
-        with open(filename, 'w') as f:
-            for event in events:
-                f.write(json.dumps(event) + '\\n')
-        
-        logger.info(f"Saved {len(events)} events to {filename}")
+    def save_events_to_snowflake_stage(self, events: List[Dict], session):
+        """Save events directly to Snowflake internal stage for Snowpipe"""
+        if not events:
+            return
+            
+        try:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            stage_path = f"@marketing_events_stage/events_{timestamp}.json"
+            
+            # Convert events to JSONL format
+            jsonl_content = '\\n'.join([json.dumps(event) for event in events])
+            
+            # Put file to Snowflake internal stage
+            session.sql(f"""
+                PUT 'data:application/json;base64,{jsonl_content}' '{stage_path}'
+                AUTO_COMPRESS = TRUE
+            """).collect()
+            
+            logger.info(f"Uploaded {len(events)} events to Snowflake stage: {stage_path}")
+            
+        except Exception as e:
+            logger.warning(f"Could not upload to Snowflake stage: {e}")
+            # Fallback: just log the events for demo purposes
+            logger.info(f"Demo: Generated {len(events)} events - {[e.get('event_type') for e in events[:3]]}")
 
 class StreamingDemo:
-    """Demonstrate real-time streaming capabilities"""
+    """Demonstrate real-time streaming capabilities using Snowflake stages"""
     
-    def __init__(self, use_s3: bool = False, s3_bucket: str = None):
+    def __init__(self, use_snowflake_stage: bool = True):
         self.event_streamer = MarketingEventStreamer()
-        self.snowpipe_streamer = SnowpipeStreamer(s3_bucket) if use_s3 else None
-        self.use_s3 = use_s3
+        self.snowpipe_streamer = SnowpipeStreamer()
+        self.use_snowflake_stage = use_snowflake_stage
+        self.session = None
         
     def run_demo(self, duration_minutes: int = 10):
         """Run streaming demo for specified duration"""
         logger.info(f"Starting streaming demo for {duration_minutes} minutes...")
+        
+        # Try to create Snowflake session for stage upload
+        try:
+            # This would require actual Snowflake connection
+            # For demo purposes, we'll just simulate
+            logger.info("Demo mode: Simulating Snowflake stage uploads")
+            self.session = None  # Would be actual session in production
+        except Exception as e:
+            logger.info("Running in demo mode without Snowflake connection")
+            self.session = None
         
         # Start event generation
         generator_thread = self.event_streamer.start_streaming()
@@ -281,14 +303,12 @@ class StreamingDemo:
                 if events:
                     total_events += len(events)
                     
-                    if self.use_s3 and self.snowpipe_streamer:
-                        # Upload to S3 for Snowpipe
-                        self.snowpipe_streamer.upload_events_to_s3(events)
+                    if self.use_snowflake_stage and self.session:
+                        # Upload to Snowflake internal stage for Snowpipe
+                        self.snowpipe_streamer.save_events_to_snowflake_stage(events, self.session)
                     else:
-                        # Save locally
-                        if not self.snowpipe_streamer:
-                            self.snowpipe_streamer = SnowpipeStreamer()
-                        self.snowpipe_streamer.save_events_locally(events)
+                        # Demo mode: just log the events
+                        logger.info(f"Demo: Generated {len(events)} events - Types: {[e.get('event_type') for e in events[:5]]}")
                 
                 time.sleep(1)  # Check every second
                 

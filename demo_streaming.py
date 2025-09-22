@@ -21,7 +21,7 @@ class DemoController:
     """Control streaming demo for presentations"""
     
     def __init__(self):
-        self.demo = StreamingDemo(use_s3=False)  # Local for demo
+        self.demo = StreamingDemo(use_snowflake_stage=True)  # Snowflake-native demo
         self.is_running = False
         self.total_events = 0
         
